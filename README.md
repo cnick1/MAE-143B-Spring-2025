@@ -5,7 +5,7 @@ Repository for Matlab coding problems
 ## Examples
 
 <details open>
-<summary>Step response for a "car"</summary>
+<summary>Session 2, Problem 1: Step response for a "car"</summary>
 <br>
 
 ### Part a)
@@ -37,7 +37,7 @@ grid on
 ```
 Here is what I get 
 
-![Car step response](Session2/problem1.png)
+![Car step response](Session2/problem1a.png)
 
 ### Part b) P-control
 Create a proportional controller transfer function with, say, $K_P=10$:
@@ -53,10 +53,34 @@ We can also compute the closed-loop transfer function from reference speed $r_t$
 ```
 uloop = feedback(pcontrol, car);
 ```
-Now we can use `step` to plot the response of the car for different values of $K_P$. 
-We expect that all of the responses are exponentials. 
+Now we can use `step` to simulate and then plot the response of the car for different values of $K_P$. 
+We expect that all of the responses are exponentials.
+Here is what I get for various different gains: 
 ![alt text](Session2/problem1b.png)
 
 ### Part c) PI-Control 
+Create a PI-controller with, say, $K_P=10$ and $K_I=5$:
+```
+Kp=10; Ki=5; picontrol = tf([Kp Ki],[1 0])
+```
+Create the PI unity feedback closed loop:
+```
+picloop = feedback(picontrol*car,1);
+```
+Create the control transfer function:
+```
+cpiloop = feedback(picontrol, car)
+```
+Try out the Matlab logical function `isstable`
+```
+isstable(picloop)
+```
+
+Now we can again use `step` to simulate and then plot the response of the car for different values of $K_P$ and $K_I$. 
+Note that now we have two poles in the closed-loop transfer functions. 
+
+Here is what I get for various gain parameters: 
+![alt text](Session2/problem1c.png)
+
 
 </details>
