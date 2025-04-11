@@ -1,6 +1,7 @@
 # MAE 143B 4th Hour Problem Sessions
 Repository for Matlab coding problems
 
+Helpful tip: you can always type `help (command)` to get information on a command or function
 
 ## Examples
 
@@ -16,6 +17,8 @@ $`
     =
     \frac{0.04}{s+0.1}
 `$
+
+The input $u(t)$ to the car is the gas pedal position, in millimeters (mm), and the output $y(t)$ is the speed of the car.
 
 Use the Matlab `tf` command to create a car: 
 ```
@@ -48,8 +51,8 @@ Put this into a unity feedback loop (with the negative sign as appropriate for e
 ```
 pcloop = feedback(pcontrol*car,1);
 ```
-This is the closed-loop transfer function from reference speed $r_t$ to output $y_t$.
-We can also compute the closed-loop transfer function from reference speed $r_t$ to accelerator position in mm:
+This is the closed-loop transfer function from reference speed $r(t)$ to output $y(t)$.
+We can also compute the closed-loop transfer function from reference speed $r(t)$ to gas pedal position in mm:
 ```
 uloop = feedback(pcontrol, car);
 ```
@@ -57,6 +60,9 @@ Now we can use `step` to simulate and then plot the response of the car for diff
 We expect that all of the responses are exponentials.
 Here is what I get for various different gains: 
 ![alt text](Session2/problem1b.png)
+
+Remember that this is a feedback control problem where we are trying to track the reference $r(t) = 1$ m/s. 
+How well does p-control work for this problem?
 
 ### Part c) PI-Control 
 Create a PI-controller with, say, $K_P=10$ and $K_I=5$:
@@ -82,5 +88,7 @@ Note that now we have two poles in the closed-loop transfer functions.
 Here is what I get for various gain parameters: 
 ![alt text](Session2/problem1c.png)
 
+Again, remember that the `step` function is simulating the response to a unit step reference input, so we are trying to track a reference of $r(t) =  1$ m/s. 
+Comparing the PI controller performance with the P controller performance, do you notice any differences?
 
 </details>
