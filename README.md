@@ -9,6 +9,8 @@ Helpful tip: you can always type `help (command)` to get information on a comman
 <summary>Session 2, Problem 1: Step response for a "car"</summary>
 <br>
 
+For a complete script, check out Session2/problem1.m. To reproduce the plots here, you may need to modify the script to simulate and plot several system responses for different gain values.
+
 ### Part a)
 We are going to model a car as a simple first-order system with transfer function
 
@@ -59,10 +61,13 @@ uloop = feedback(pcontrol, car);
 Now we can use `step` to simulate and then plot the response of the car for different values of $K_P$. 
 We expect that all of the responses are exponentials.
 Here is what I get for various different gains: 
+
 ![alt text](Session2/problem1b.png)
 
 Remember that this is a feedback control problem where we are trying to track the reference $r(t) = 1$ m/s. 
 How well does p-control work for this problem?
+
+*The proportional controller fails to get the car speed to match the one m/s input that we applied to the reference $r(t)$. As we increase the gain, we get closer, but we never quite get there. On the right, we see that as expected, as we increase the gain, we step harder and harder on the gas, but still we end up having a steady-state error due to not reaching the desired speed. Proportional control is not the right choice of controller for this system.*
 
 ### Part c) PI-Control 
 Create a PI-controller with, say, $K_P=10$ and $K_I=5$:
@@ -86,9 +91,12 @@ Now we can again use `step` to simulate and then plot the response of the car fo
 Note that now we have two poles in the closed-loop transfer functions. 
 
 Here is what I get for various gain parameters: 
+
 ![alt text](Session2/problem1c.png)
 
 Again, remember that the `step` function is simulating the response to a unit step reference input, so we are trying to track a reference of $r(t) =  1$ m/s. 
 Comparing the PI controller performance with the P controller performance, do you notice any differences?
+
+*The proportional-integral controllers all reach the desired steady-state value of 1, corresponding to the reference $r(t) =  1$ m/s. Now we can choose different gain values to get different behaviors, i.e. we can specify that we don't just want to reach 1 m/s, we also don't want to overshoot (to avoid a speeding ticket), we don't want to oscillate (to avoid motion sickness), etc.*
 
 </details>

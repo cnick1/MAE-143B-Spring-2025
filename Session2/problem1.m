@@ -36,6 +36,9 @@ xlabel('time (s)')
 ylabel('pedal position (mm)')
 grid on
 
+% To get the plots on the GitHub README, try 
+% adding a loop over various values for Kp
+
 %% Part c) PI-control
 Kp=10; Ki=5; picontrol = tf([Kp Ki],[1 0])
 picloop = feedback(picontrol*car,1)
@@ -57,3 +60,6 @@ title('One m/s reference → pedal closed-loop step response')
 xlabel('time (s)')
 ylabel('pedal position (mm)')
 grid on
+
+% To get the plots on the GitHub README, try 
+% adding a loop over various values for Ki
