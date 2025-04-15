@@ -5,7 +5,80 @@ Helpful tip: you can always type `help (command)` to get information on a comman
 
 ## Examples
 
-<details open>
+<details closed>
+<summary>Session 3, Problem 1: Position Servo Device Control</summary>
+<br>
+
+For a complete script, check out Session3/problem1.m. To reproduce the plots here, you may need to modify the script to simulate and plot several system responses for different gain values.
+
+Consider the following plant transfer function
+
+$`
+    G_\theta(s) 
+    =
+    \frac{\Theta(s)}{V(s)}
+    =
+    \frac{c}{Js^2+bs}.
+`$
+
+where $J=1$, $b=0.104$, and $c=0.2$. 
+This second-order transfer function maps voltage input to angular position output, and it serves as a simplified model of a DC motor.
+
+Suppose we want to use this motor as a servo to control a throttle valve. 
+We would like to specify a desired angular position $\theta_r(t)$ of the valve:
+closed corresponds to 0, and open corresponds to 1. 
+We add a sensor that measures the angular position of the motor $\theta_m(t)$, and as a first attempt at the control design, we will devise a simple proportional controller: 
+
+$`
+    v(t)
+    =
+    K(\theta_r - \theta_m).
+`$
+
+### Part a) 
+What is the closed-loop transfer function of the system, i.e. the mapping from $\theta_r(t)$ to $\theta_m(t)$?
+Start by drawing a block diagram for the system.
+
+This is a unity feedback system with P-control, P-gain is $K$ and the reference is $\theta_r$. So, the transfer function from $\theta_r$ to $\theta_m$ is
+
+$`
+                      \frac{KG_\theta(s)}{1+KG_\theta(s)}  =\frac{0.2\,K}{s^2+0.104\,s+0.2K}.
+`$
+
+How can we verify this with Matlab? 
+Well, for a particular value of $K$, we can construct the closed-loop transfer function of the system using the `feedback()` command: 
+```
+c = 0.2; J = 1; b = 0.104;
+G_theta = tf(c,[J b 0]); 
+Gcloop = feedback(1*G_theta,1) % closed-loop tf for K=1
+```
+```
+> G =
+           0.2
+  -------------------
+  s^2 + 0.104 s + 0.2
+```
+
+![](Session3/problem1a.png)
+
+Notice how there is an envelope and they all decay at similar rates? 
+![](Session3/envelope.png)
+![](Session3/sigma.png)
+
+While the damping envelope is the same for all of them, they have very different behaviors; we choose to characterize the behavior of second-order systems by defining the concepts of rise-time, overshoot, etc.
+
+These lead to the following approximate formulas that we can use to design controllers to meet our specifications: 
+![](Session3/specifications.png)
+
+For a closed-loop system, the gain parameters of our controllers will generally appear in some relationship to the parameters $\zeta$, $\omega_n$, etc.
+
+### Part b) 
+Let's plot the closed-loop step response for various values of $K$: 
+
+
+</details>
+
+<details closed>
 <summary>Session 2, Problem 1: Step response for a "car"</summary>
 <br>
 
