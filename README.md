@@ -3,12 +3,14 @@ Repository for Matlab coding problems
 
 Helpful tip: you can always type `help (command)` to get information on a command or function
 
+
 ## Examples
 
-<details closed>
+<!-- <details closed>
 <summary>Session 3, Problem 1: Servo position control</summary>
-<br>
+<br> -->
 
+## Session 3, Problem 1: Servo position control
 For a complete script, check out Session3/problem1.m. To reproduce the plots here, you may need to modify the script to simulate and plot several system responses for different gain values.
 
 Consider the following plant transfer function
@@ -94,7 +96,7 @@ legend('K=0.1','K=1','K=5')
 ![](Session3/problem1a.png)
 
 Notice how there is an envelope and they all decay at similar rates? 
-What do we think is happening to the poles of the system as we change the proportional gain $K$? *(Think about what $\sigma$ indicates in the poles: $p_{1,2} = -\sigma \pm j \omega_d$.)*
+What do we think is happening to the poles of the system as we change the proportional gain $K$? *(Think about what* $\sigma$ *indicates in the poles:* $p_{1,2} = -\sigma \pm j \omega_d$ *.)*
 (Section 3.3 in Franklin & Powell)
 
 ![](Session3/envelope.png)
@@ -105,10 +107,17 @@ While the damping envelope is the same for all of them, they have very different
 These lead to the following approximate formulas that we can use to design controllers to meet our specifications: 
 
 $`
-    t_r \simeq \frac{1.8}{\omega_n} \qquad\qquad\qquad \text{(rise-time formula)}\\ 
-    M_p = e^{-\pi \zeta / \sqrt{1-\zeta^2}} \qquad \text{(overshoot formula)}\\ 
+    t_r \simeq \frac{1.8}{\omega_n} \qquad\qquad\qquad \text{(rise-time formula)}
+`$
+
+$`
+    M_p = e^{-\pi \zeta / \sqrt{1-\zeta^2}} \qquad \text{(overshoot formula)}
+`$
+
+$`
     t_s = \frac{4.6}{\zeta \omega_n} \qquad\qquad\qquad\! \text{(settling-time formula)}
 `$
+
 
 > [!CAUTION]  
 > These formulas are derived from a _second-order system_ with _no zeros_. In reality no real system is ever a pure second-order system with no zeros, so these should always be used an approximation/starting point. 
@@ -151,10 +160,22 @@ How do we choose which one to apply?
 Let's again look at the closed-loop transfer functions for a few of the options: 
 
 $`
-    \text{P:} \,\,\,\quad  H(s) = \frac{K_p c}{Js^2 + bs + K_pc}\\ 
-    \text{I:} \qquad  H(s) = \frac{K_i c}{Js^3 + bs^2 + K_ic}\\ 
-    \text{D:} \,\,\,\quad  H(s) = \frac{K_d c s}{Js^2 + (b + K_dc)s}\\ 
-    \text{PI:} \,\,\quad H(s) =  \frac{K_p c s + K_i c}{Js^3 + bs^2 + K_pcs+K_ic} \\
+    \text{P:} \,\,\,\quad  H(s) = \frac{K_p c}{Js^2 + bs + K_pc}
+`$
+
+$` 
+    \text{I:} \qquad  H(s) = \frac{K_i c}{Js^3 + bs^2 + K_ic}
+`$
+
+$`
+    \text{D:} \,\,\,\quad  H(s) = \frac{K_d c s}{Js^2 + (b + K_dc)s}
+`$
+
+$`
+    \text{PI:} \,\,\quad H(s) =  \frac{K_p c s + K_i c}{Js^3 + bs^2 + K_pcs+K_ic}
+`$
+
+$`
     \text{PD:} \quad H(s) =  \frac{K_d c s + K_p c}{Js^2 + (b + K_dc)s + K_pc} 
 `$
 
@@ -183,8 +204,14 @@ It is possible to do the control design without resorting to plotting the respon
 To get a starting point, we can use the following formulas:
 
 $`
-    t_r \simeq \frac{1.8}{\omega_n} \qquad\qquad\qquad \text{(rise-time formula)}\\ 
-    M_p = e^{-\pi \zeta / \sqrt{1-\zeta^2}} \qquad \text{(overshoot formula)}\\ 
+    t_r \simeq \frac{1.8}{\omega_n} \qquad\qquad\qquad \text{(rise-time formula)}
+`$
+
+$`
+    M_p = e^{-\pi \zeta / \sqrt{1-\zeta^2}} \qquad \text{(overshoot formula)}
+`$
+
+$`
     t_s = \frac{4.6}{\zeta \omega_n} \qquad\qquad\qquad\! \text{(settling-time formula)}
 `$
 
@@ -192,9 +219,18 @@ Let's say we want a rise-time of less than 5 seconds.
 We can rearrange the first formula and find (with $\omega_n = \sqrt{0.2 K_p}$ for this closed-loop system)
 
 $`
-    t_r \simeq \frac{1.8}{\omega_n} \qquad\qquad\qquad \text{(rise-time formula)}\\ 
-    \omega_n \simeq \frac{1.8}{t_r} \\
-    0.2 K_p \simeq \frac{1.8^2}{5^2} \\
+    t_r \simeq \frac{1.8}{\omega_n} \qquad\qquad\qquad \text{(rise-time formula)}
+`$
+
+$`
+    \omega_n \simeq \frac{1.8}{t_r}
+`$
+
+$`
+    0.2 K_p \simeq \frac{1.8^2}{5^2}
+`$
+
+$`
     K_p \simeq \frac{1.8^2}{5} \approx 0.648
 `$
 
@@ -205,12 +241,18 @@ For this closed-loop system $2\zeta\omega_n = 0.104 + 0.2K_d$, which we can rear
 We can use the second formula to find the minimum gain $K_d$ required to bring the overshoot down below 20%.
 
 $`
-    M_p = e^{-\pi \zeta / \sqrt{1-\zeta^2}} \qquad \text{(overshoot formula)}\\ 
+    M_p = e^{-\pi \zeta / \sqrt{1-\zeta^2}} \qquad \text{(overshoot formula)}
+`$
+
+$`
     % \text{ln}(M_p) = -\pi \zeta / \sqrt{1-\zeta^2} \\ 
     % \text{ln}(M_p)\sqrt{1-\zeta^2} = -\pi \zeta   \\ 
     % \text{ln}(M_p)^2(1-\zeta^2) - \pi^2 \zeta^2 = 0   \\ 
     % \zeta^2 (\text{ln}(M_p)^2 + \pi^2) = \text{ln}(M_p)^2  \\ 
-    \zeta = -\frac{\text{ln}(M_p)}{\sqrt{\text{ln}(M_p)^2+\pi^2}}   \qquad \text{(overshoot formula rearranged)} \\ 
+    \zeta = -\frac{\text{ln}(M_p)}{\sqrt{\text{ln}(M_p)^2+\pi^2}}   \qquad \text{(overshoot formula rearranged)}
+`$
+
+$`
     \zeta = -\frac{\text{ln}(0.2)}{\sqrt{\text{ln}(0.2)^2+\pi^2}} \approx 0.4559
 `$
 
@@ -248,7 +290,7 @@ We then resorted to plotting the response to verify if we met the performance re
 
 
 
-</details>
+<!-- </details> -->
 
 <details closed>
 <summary>Session 2, Problem 1: Step response for a "car"</summary>
