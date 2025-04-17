@@ -182,7 +182,7 @@ $`
 > [!TIP]  
 > Important lesson #1: as engineers, we should be interested in solving the problems that we know how to solve
 
-## Part c) PD Control
+### Part c) PD Control
 With that in mind, we are going to choose PD control: 
 * I know how to compute roots of a quadratic polynomial, so I can verify if it is stable. *(That is hard for a cubic polynomial, and [there is no general formula for roots of polynomials of degree > 4](https://www.wolframalpha.com/input?i=abel%E2%80%99s+impossibility+theorem). Later on we will probably learn about the Routh-Hurwitz criterion that allows us to check stability without explicitly computing the roots.)*
 * PD control results in a second-order system with one zero. We can apply the time domain specifications relating to rise-time, overshoot, etc. more readily 
@@ -295,6 +295,7 @@ We then resorted to plotting the response to verify if we met the performance re
 <details closed>
 <summary>Session 2, Problem 1: Step response for a "car"</summary>
 <br>
+## Session 2, Problem 1: Step response for a "car"
 
 For a complete script, check out Session2/problem1.m. To reproduce the plots here, you may need to modify the script to simulate and plot several system responses for different gain values.
 
