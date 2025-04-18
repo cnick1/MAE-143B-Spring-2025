@@ -223,7 +223,7 @@ $`
 `$
 
 $`
-    \omega_n \simeq \frac{1.8}{t_r}
+    \sqrt{\omega_n} \simeq \frac{1.8}{t_r}
 `$
 
 $`
