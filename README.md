@@ -245,15 +245,15 @@ $`
 `$
 
 $`
-    % \text{ln}(M_p) = -\pi \zeta / \sqrt{1-\zeta^2} \\ 
-    % \text{ln}(M_p)\sqrt{1-\zeta^2} = -\pi \zeta   \\ 
-    % \text{ln}(M_p)^2(1-\zeta^2) - \pi^2 \zeta^2 = 0   \\ 
+    \text{ln}(M_p) = -\pi \zeta / \sqrt{1-\zeta^2} \\ 
+    \text{ln}(M_p)\sqrt{1-\zeta^2} = -\pi \zeta   \\ 
+    \text{ln}(M_p)^2(1-\zeta^2) - \pi^2 \zeta^2 = 0   \\ 
     % \zeta^2 (\text{ln}(M_p)^2 + \pi^2) = \text{ln}(M_p)^2  \\ 
-    \zeta = \sqrt{\frac{\text{ln}(M_p)}{\text{ln}(M_p)^2+\pi^2}}   \qquad \text{(overshoot formula rearranged)}
+    \zeta = \sqrt{\frac{\text{ln}(M_p)^2}{\text{ln}(M_p)^2+\pi^2}}   \qquad \text{(overshoot formula rearranged)}
 `$
 
 $`
-    \zeta = \sqrt{\frac{\text{ln}(0.2)}{\text{ln}(0.2)^2+\pi^2}} \approx 0.4559
+    \zeta = \sqrt{\frac{\text{ln}(0.2)^2}{\text{ln}(0.2)^2+\pi^2}} \approx 0.4559
 `$
 
 Now we solve $\zeta = \frac{0.052}{\sqrt{0.2}} + \frac{0.1}{\sqrt{0.2}}K_d$ for $K_d$ and find that as long as $K_d > 1.5191$, we should have an overshoot of less than 20% for $K_p = 1$.
