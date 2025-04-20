@@ -332,14 +332,14 @@ Here is what I get
 
 ![Car step response](Session2/problem1a.png)
 
-### Part b) Integral control
+### Part b) Proportional Control (P-Control)
 Create a proportional controller transfer function with, say, $K_P=10$:
 ```
-Ki=10; icontrol = tf(Kp,[1 0]);
+Kp=10; pcontrol = tf(Kp,1)
 ```
 Put this into a unity feedback loop (with the negative sign as appropriate for error feedback): 
 ```
-icloop = feedback(icontrol*car,1);
+pcloop = feedback(pcontrol*car,1)
 ```
 This is the closed-loop transfer function from reference speed $r(t)$ to output $y(t)$.
 We can also compute the closed-loop transfer function from reference speed $r(t)$ to gas pedal position in mm:
