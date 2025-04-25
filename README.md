@@ -3,12 +3,142 @@ Repository for Matlab coding problems
 
 Helpful tip: you can always type `help (command)` to get information on a command or function
 
+For a complete script, look in the Session folders. To reproduce the plots here, you may need to modify the script, e.g. to simulate and plot several system responses for different gain values.
 
 ## Examples
 
 <!-- <details closed>
+<summary>Session 4, Problem 1: Servo position control with ramp inputs</summary> -->
+<!-- <br> -->
+## Session 4, Problem 1: Servo position control with ramp inputs
+Continuing with our problem from last week, we are designing a controller for the throttle valves on a rocket's fuel and oxidizer lines. 
+The plant model is a DC motor, for which we measure its position $\theta_m(t)$ as an output. The motor is attached to a valve, and we want to precisely control the angular position in order to control the fuel/oxidizer going to the engine and, consequently, the thrust propelling the rocket.
+
+The plant model of interest is a second-order transfer function mapping voltage input to the motor to angular position output:
+
+$`
+    G_\theta(s) 
+    =
+    \frac{\Theta(s)}{V(s)}
+    =
+    \frac{c}{Js^2+bs},
+`$
+
+where $J=1$, $b=0.104$, and $c=0.2$. 
+We would like to specify a reference angular position $\theta_r(t)$ of the valve:
+closed corresponds to 0, and open corresponds to 1. 
+
+Last week, we considered a first pass at controller design where we wanted to meet rise-time and overshoot specifications. 
+We worked with the tools we had learned, and decided the simplest controller design that would meet both specifications was a PD controller. 
+This was convenient because we could apply our second-order system knowledge reasonably well.
+
+The next step for the rocket is a "throttlable hotfire" test, during which we need to not just open and close the valve between 0 and 100%, but rather we need to track some specified throttle curve. 
+Here are the test requirements: 
+
+    During hotfire, the engine must demonstrate controlled nominal 100% thrust for 4 seconds, smoothly throttle down to 40% of that nominal thrust and hold constant for at least 2 seconds, then return to the nominal thrust for at least 1 second. Bounds of ±5% are considered acceptable.
+
+Here is an illustration of a possible reference signal $\theta_R(t)$ that we want to track: 
+
+![throttle trace](Session4/throttleTrace.png)
+
+Remembering our lesson about system type, we recall that certain systems are only able to track step inputs, whereas others are able to track ramp inputs like we have here. 
+**Our PD controller was able to meet our previous rise-time and overshoot specifications, but now we want to see if our PD controller will be able to meet the new throttle trace specification.**
+In particular, we are looking for our controller to make our closed-loop system Type 2, i.e. so that it can track polynomials of degree 1 (linear ramp) with 0 error. 
+We also want to be able to reject noise and disturbances during the test, because we need to stay within the 5% bounds.
+
+![system type](Session4/systemType.png)
+
+The closed-loop block diagram in unity feedback form looks like Figure 4.2 from Franklin & Powell, which also includes a disturbance $W(s)$ and sensor noise $V(s)$:
+![unity feedback block diagram](Session4/block-diagram.png)
+
+Our plant transfer function is 
+
+$`
+    G_\theta(s) 
+    =
+    \frac{c}{Js^2+bs}.
+`$
+
+and our controller transfer function is 
+
+$`
+    D_\text{PD}(s) 
+    =
+    K_d s + K_p,
+`$
+
+The closed-loop transfer function using PD control is 
+
+$`
+    \text{PD:} \quad H(s) =  \frac{G_\theta(s) D_\text{PD}(s)}{1+ G_\theta(s)D_\text{PD}(s)}= \frac{K_d c s + K_p c}{Js^2 + (b + K_dc)s + K_pc} 
+`$
+
+Which transfer function do we need to use to determine if the system is Type 0, Type 1, Type 2? 
+
+
+*(Answer: We need to consider the transfer function from reference* $R(s)$ *to error* $E(s)=R(s)-Y(s)$*, which is* $\frac{1}{1+G_\theta(s)D_\text{PD}(s)}$) 
+
+For our PD system in unity feedback form, the loop gain is
+
+$`
+    G_\theta(s)D_\text{PD}(s) = \frac{K_d c s + K_p c}{Js^2+bs}
+`$
+
+and the transfer function from reference to error is 
+
+$`
+    \text{PD:} \quad S =  \frac{1}{1+ G_\theta(s)D_\text{PD}(s)}= \frac{Js^2+bs}{Js^2+ (K_d c + b) s + K_p c} 
+`$
+
+(Note that $S$ is stable, since it has the same denominator as the closed-loop transfer function so it has the same poles, which we found to be stable)
+.
+<!-- Following Franklin & Powell Section 4.2.1  -->
+Application of the Final Value Theorem to the error gives 
+
+$`
+    \lim_{t \to \infty} e(t) = \lim_{s \to 0} s E(s) \\ 
+    = \lim_{s \to 0} s \frac{1}{1+ G_\theta(s)D_\text{PD}(s)} R(s) \\ 
+    = \lim_{s \to 0} \frac{Js^2+bs}{Js^2+ (K_d c + b) s + K_p c}  \frac{s}{s^{k+1}} 
+`$
+
+For $k=0$, 
+
+$`
+    \lim_{t \to \infty} e(t)
+    = \lim_{s \to 0} \frac{Js^2+bs}{Js^2+ (K_d c + b) s + K_p c} = 0 
+`$
+
+
+For $k=1$, 
+
+$`
+    \lim_{t \to \infty} e(t)
+    = \lim_{s \to 0} \frac{Js+b}{Js^2+ (K_d c + b) s + K_p c} = \frac{b}{K_p c} \neq 0 
+`$
+
+For $k=2$ we will get infinite error.
+Since the highest degree polynomial we can track (albeit with a constant error) is $k=1$, our system is **Type 1.** This means that we expect a constant off-set error during the ramps. 
+
+![PD throttle test](Session4/PD-throttleTest.png)
+
+Without derivative control, we have horrible results as expected. 
+Once we add derivative control, we see that we can get better results, and after tuning the gains a bit we can get fairly close. 
+However, even with the derivative gain set to 50, we still have offset on the ramp section that puts us very close to the 5% bounds, and noise and disturbances could throw us out. 
+Neglecting those disturbances though, does the blue curve satisfy our requirements?
+
+*(Answer: No! Because of the ramp offset, we technically are not holding at 40% for a full 2 seconds! Ok, we could just give ourselves some extra time at 40% to account for this, and this would probably be considered good enough, but we can do better. )*
+
+So this is consistent with Table 4.1; a Type 1 system is passable, albeit with error, for the thrust trace we have. But we really would like a Type 2 system, so maybe we should add some integral control?
+
+> [!CAUTION]  
+> System type has to do with steady-state errors. 
+We can think about tracking a ramp input here, but it is not infinite (and probably never could be), so we need to be aware that we may not have enough time to reach steady state. 
+
+<!-- </details> -->
+
+<details closed>
 <summary>Session 3, Problem 1: Servo position control</summary>
-<br> -->
+<br>
 
 ## Session 3, Problem 1: Servo position control
 For a complete script, check out Session3/problem1.m. To reproduce the plots here, you may need to modify the script to simulate and plot several system responses for different gain values.
@@ -290,7 +420,7 @@ We then resorted to plotting the response to verify if we met the performance re
 
 
 
-<!-- </details> -->
+</details>
 
 <details closed>
 <summary>Session 2, Problem 1: Step response for a "car"</summary>
